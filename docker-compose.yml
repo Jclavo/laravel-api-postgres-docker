@@ -1,0 +1,16 @@
+version: '3'
+
+services: 
+
+    laravel-api:
+      image: laravel-api
+      container_name: myapp-laravel
+      build: .
+      volumes:
+          - ./src:/var/www/html
+          - ./php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+          -  /var/www/html/vendor # to not share node_modules
+      ports: 
+          - 8000:8000
+        #   - 9001:9001 # for xdebug in vs
+      command: php artisan serve --host 0.0.0.0
