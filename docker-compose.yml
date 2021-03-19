@@ -1,16 +1,42 @@
 version: '3'
 
+networks: 
+  laravelappname:
+
 services: 
 
     laravel-api-appname:
       image: laravel-api-appname
-      container_name: myappname-laravel
-      build: .
+      container_name: appname-laravel
+      build: 
+        context: .
+        dockerfile: laravel.dockerfile
       volumes:
-          - ./src:/var/www/html
-          - ./php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-          -  /var/www/html/vendor # to not share node_modules
+        - ./src:/var/www/html
+        - ./php/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+        -  /var/www/html/vendor # to not share node_modules
       ports: 
-          - 8000:8000
-        #   - 9001:9001 # for xdebug in vs
+        - 8000:8000
+      networks: 
+        - laravelappname
+      
       command: php artisan serve --host 0.0.0.0
+
+    postgres-db-appname:
+      container_name: dbappname-postgres
+      image: postgres-db-appname
+      build: 
+        context: .
+        dockerfile: postgres.dockerfile
+      restart: always
+      environment: 
+        POSTGRES_PASSWORD: password
+        # POSTGRES_HOST_AUTH_METHOD: 0.0.0.0/0
+      ports:
+        - 5433:5432
+      volumes:
+        - ./postgres/conf.d/my-postgres.conf:/etc/postgresql/postgresql.conf # set configuations
+        - ./postgres/data:/var/lib/postgresql/data #store data
+        - ./postgres/scripts:/docker-entrypoint-initdb.d # run scripts inmediatly
+      networks: 
+        - laravelappname

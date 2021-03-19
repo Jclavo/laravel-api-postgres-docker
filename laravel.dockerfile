@@ -2,7 +2,13 @@ FROM composer
 
 FROM php:7.4-fpm-alpine
 
-RUN docker-php-ext-install pdo pdo_mysql
+# Install Postgre PDO
+RUN set -ex \
+    && apk --no-cache add \
+    postgresql-dev
+
+RUN docker-php-ext-install pdo pdo_pgsql
+
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
