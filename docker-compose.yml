@@ -2,9 +2,9 @@ version: '3'
 
 services: 
 
-    laravel-api:
-      image: laravel-api
-      container_name: myapp-laravel
+    laravel-api-appname:
+      image: laravel-api-appname
+      container_name: myappname-laravel
       build: .
       volumes:
           - ./src:/var/www/html
